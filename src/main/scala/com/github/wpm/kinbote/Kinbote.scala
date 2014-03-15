@@ -4,51 +4,62 @@ import scalax.collection.Graph
 import scala.util.matching.Regex
 
 /**
- * Text to be annotated
+ * Standoff annotation associates a document with annotations that describe the document
+ * @param document document to annotate
+ * @param annotations graph of annotations of the document
  */
-case class Document(text: String) {
-  def content(span: Span): String = text.substring(span.start, span.end)
+case class AnnotatedDocument(document: String,
+                             annotations: Graph[Annotation, scalax.collection.GraphEdge.DiEdge] = Graph()) {
+  def ++(as: Traversable[Annotation]) = AnnotatedDocument(document, (annotations /: as)(_ + _))
+}
+
+object AnnotatedDocument {
+  implicit def AnnotatedDocumentToDocument(a: AnnotatedDocument) = a.document
 }
 
 /**
- * Information about a region of a document
+ * Information about a document
  */
 abstract class Annotation
 
 /**
- * A region within a document
+ * Meaningful contiguous region of a document.
+ *
+ * The region is specified by fencepost offsets from the start of the document. Tokens sort by position in the
+ * document.
+ * @param start start of region
+ * @param end end of region
+ * @param document document containing this token
  */
-case class Span(start: Int, end: Int) extends Annotation {
+case class Token(start: Int, end: Int)(implicit document: AnnotatedDocument) extends Annotation with Ordered[Token] {
   assert(start <= end)
 
-  def content(span: Span)(implicit document: Document): String = document.content(span)
-}
+  val content = document.substring(start, end)
 
-case class AnnotatedDocument(document: Document,
-                             annotations: Graph[Annotation, scalax.collection.GraphEdge.DiEdge] = Graph()) {
-  def text = document.text
-
-  def ++(as: Traversable[Annotation]) = AnnotatedDocument(document, (annotations /: as)(_ + _))
-}
-
-abstract class Annotator {
-  def annotate(implicit document: AnnotatedDocument): AnnotatedDocument
-}
-
-case class RegularExpressionTokenizer(delimiter: Regex = "\\w+".r) extends Annotator {
-  override def annotate(implicit document: AnnotatedDocument): AnnotatedDocument = {
-    val tokens = for (m <- delimiter.findAllMatchIn(document.text)) yield Span(m.start, m.end)
-    document ++ tokens.toSeq
+  override def compare(that: Token) = start.compare(that.start) match {
+    case 0 => end.compare(that.end)
+    case x => x
   }
+
+  override def toString = s"($start:$end):$content"
 }
 
 
 object Kinbote {
-  implicit def StringToDocument(text: String) = Document(text)
+  implicit def DocumentToAnnotatedDocument(document: String) = AnnotatedDocument(document)
 
-  implicit def DocumentToAnnotatedDocument(implicit document: Document) = AnnotatedDocument(document)
+  type Annotator = AnnotatedDocument => AnnotatedDocument
+
+  /**
+   * Uses a regular expression to tokenize a document
+   * @param delimiter token regular expression, default is words and one-character punctuation
+   * @param document document to tokenize
+   * @return document with token annotations
+   */
+  def regularExpressionTokenizer(delimiter: Regex = "\\w+|[\"'().,?!]".r)(implicit document: AnnotatedDocument) =
+    document ++ delimiter.findAllMatchIn(document).map(m => Token(m.start, m.end)).toTraversable
 
   def main(args: Array[String]) {
-    println(RegularExpressionTokenizer().annotate(AnnotatedDocument("The mouse ran")))
+    println(regularExpressionTokenizer()("He loves himself."))
   }
 }
