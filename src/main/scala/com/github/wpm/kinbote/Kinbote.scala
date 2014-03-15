@@ -1,10 +1,13 @@
 package com.github.wpm.kinbote
 
+import scalax.collection.Graph
+import scala.util.matching.Regex
+
 /**
  * Text to be annotated
  */
 case class Document(text: String) {
-  def region(span: Span): String = text.substring(span.begin, span.end)
+  def content(span: Span): String = text.substring(span.start, span.end)
 }
 
 /**
@@ -15,35 +18,37 @@ abstract class Annotation
 /**
  * A region within a document
  */
-case class Span(begin: Int, end: Int) extends Annotation {
-  assert(begin <= end)
+case class Span(start: Int, end: Int) extends Annotation {
+  assert(start <= end)
+
+  def content(span: Span)(implicit document: Document): String = document.content(span)
 }
 
-// TODO Use http://www.scala-graph.org, annotations:Graph
-// If the edges are labeled this graph becomes isomorphic to an AVM.
-/**
- * A document is described by a directed graph of annotations
- * @param document document
- * @param annotations annotations describing the document
- * @param edges edges in the annotation graph
- */
-case class AnnotatedDocument(document: Document, annotations: Set[Annotation], edges: Set[Pair[Annotation, Annotation]]) {
-  def +(annotation: Annotation): AnnotatedDocument = AnnotatedDocument(document, annotations + annotation, edges)
+case class AnnotatedDocument(document: Document,
+                             annotations: Graph[Annotation, scalax.collection.GraphEdge.DiEdge] = Graph()) {
+  def text = document.text
 
-  def +(annotation: Annotation, currentAnnotation: Annotation) {
-    assert(annotations.contains(currentAnnotation))
-    AnnotatedDocument(document, annotations + annotation, edges + Pair(annotation, currentAnnotation))
+  def ++(as: Traversable[Annotation]) = AnnotatedDocument(document, (annotations /: as)(_ + _))
+}
+
+abstract class Annotator {
+  def annotate(implicit document: AnnotatedDocument): AnnotatedDocument
+}
+
+case class RegularExpressionTokenizer(delimiter: Regex = "\\w+".r) extends Annotator {
+  override def annotate(implicit document: AnnotatedDocument): AnnotatedDocument = {
+    val tokens = for (m <- delimiter.findAllMatchIn(document.text)) yield Span(m.start, m.end)
+    document ++ tokens.toSeq
   }
 }
 
 
-abstract class Annotator {
-  def annotate(document: Document): Set[Pair[Span, Annotation]]
-}
-
-
 object Kinbote {
+  implicit def StringToDocument(text: String) = Document(text)
+
+  implicit def DocumentToAnnotatedDocument(implicit document: Document) = AnnotatedDocument(document)
+
   def main(args: Array[String]) {
-    println("Kinbote")
+    println(RegularExpressionTokenizer().annotate(AnnotatedDocument("The mouse ran")))
   }
 }
