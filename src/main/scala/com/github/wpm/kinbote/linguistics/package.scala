@@ -1,6 +1,8 @@
 package com.github.wpm.kinbote
 
-
+/**
+ * Linguistic concepts that may be used in the annotation of natural language.
+ */
 package object linguistics {
 
   object Person extends Enumeration {

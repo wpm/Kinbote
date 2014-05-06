@@ -1,34 +1,15 @@
-package com.github.wpm.kinbote
+package com.github.wpm.kinbote.example
 
-import scala.util.matching.Regex
+import com.github.wpm.kinbote._
 import com.github.wpm.kinbote.linguistics._
 
-object ExampleAnnotators {
-  /**
-   * Tokenize a document using a regular expression.
-   *
-   * The default regular expression splits on whitespace and treats single-character punctuation marks as tokens.
-   * @param delimiter regular expression that specifies the token delimiter
-   * @param document document to tokenize
-   * @param annotations incoming annotation set
-   * @return annotation set with tokens added
-   */
-  def regularExpressionTokenizer(delimiter: Regex = "\\w+|[\"'().,?!]".r)
-                                (document: Document,
-                                 annotations: StandoffAnnotation = StandoffAnnotation()): StandoffAnnotation = {
-    annotations.addNodes(delimiter.findAllMatchIn(document).map(m => Token(m.start, m.end)))
-  }
-
-  /**
-   * Find pronouns in a document
-   *
-   * This requires the document to have been tokenized.
-   *
-   * @param document document to analyze
-   * @param annotations incoming annotation set
-   * @return annotation set with pronoun annotations pointing to tokens
-   */
-  def pronounDetector(document: Document, annotations: StandoffAnnotation): StandoffAnnotation = {
+/**
+ * Find pronouns in a document
+ *
+ * This requires the document to have been tokenized.
+ */
+class PronounDetector extends Annotator {
+  override def annotate(document: Document, annotations: StandoffAnnotation) = {
     import Person._
     import Number._
     import Gender._
@@ -58,4 +39,8 @@ object ExampleAnnotators {
     yield edge
     annotations.addEdges(edges)
   }
+}
+
+object PronounDetector {
+  def apply() = new PronounDetector()
 }
