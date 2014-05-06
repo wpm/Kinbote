@@ -12,5 +12,6 @@ initialCommands in console := "import com.github.wpm.kinbote._"
 
 libraryDependencies ++= Seq(
   "com.assembla.scala-incubator" % "graph-core_2.10" % "1.8.1",
+  "edu.arizona.sista" % "processors" % "2.0",
   "org.scalatest" %% "scalatest" % "2.1.0" % "test"
 )
