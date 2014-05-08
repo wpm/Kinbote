@@ -10,8 +10,11 @@ scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-language:impli
 
 initialCommands in console := "import com.github.wpm.kinbote._"
 
+resolvers += "spray" at "http://repo.spray.io/"
+
 libraryDependencies ++= Seq(
   "com.assembla.scala-incubator" % "graph-core_2.11" % "1.8.1",
   "edu.arizona.sista" % "processors" % "2.0",
+  "io.spray" %%  "spray-json" % "1.2.6",
   "org.scalatest" % "scalatest_2.11" % "2.1.5" % "test"
 )

@@ -1,12 +1,16 @@
 package com.github.wpm
 
+import spray.json._
+
 
 package object kinbote {
   type Document = String
 
   type Offset = Int
 
-  trait Annotation
+  trait Annotation {
+    val json: JsObject
+  }
 
   /**
    * An annotator adds to a document's standoff annotations.

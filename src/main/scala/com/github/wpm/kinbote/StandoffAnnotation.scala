@@ -3,6 +3,7 @@ package com.github.wpm.kinbote
 import scalax.collection.Graph
 import scalax.collection.GraphEdge.DiEdge
 import scalax.collection.GraphPredef._
+import spray.json.JsArray
 
 /**
  * Standoff annotation for a document
@@ -21,7 +22,14 @@ case class StandoffAnnotation(g: Graph[Annotation, DiEdge] = Graph[Annotation, D
   def addEdges[A <: Annotation](edges: TraversableOnce[(A, A)]) =
     StandoffAnnotation(g ++ edges.map(e => (e._1 ~> e._2).asInstanceOf[Param[Annotation, DiEdge]]))
 
-  def annotations[T: reflect.ClassTag]() = g.nodes.map(_.value) collect {case a: T => a}
+  def annotations[T: reflect.ClassTag]() = g.nodes.map(_.value) collect {
+    case a: T => a
+  }
+
+  override def toString: String = {
+    val ns = g.nodes.map(_.value.asInstanceOf[Annotation].json).toSeq
+    JsArray(ns: _*).prettyPrint
+  }
 }
 
 object StandoffAnnotation {
