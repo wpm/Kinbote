@@ -3,7 +3,7 @@ package com.github.wpm.kinbote
 import scalax.collection.Graph
 import scalax.collection.GraphEdge.DiEdge
 import scalax.collection.GraphPredef._
-import spray.json.JsArray
+import spray.json.{JsObject, JsArray}
 
 /**
  * Standoff annotation for a document
@@ -28,7 +28,7 @@ case class StandoffAnnotation(g: Graph[Annotation, DiEdge] = Graph[Annotation, D
 
   override def toString: String = {
     val ns = g.nodes.map(_.value.asInstanceOf[Annotation].json).toSeq
-    JsArray(ns: _*).prettyPrint
+    JsObject("annotations" -> JsArray(ns: _*)).prettyPrint
   }
 }
 
