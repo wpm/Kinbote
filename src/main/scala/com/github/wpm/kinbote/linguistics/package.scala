@@ -1,6 +1,6 @@
 package com.github.wpm.kinbote
 
-import spray.json.{JsNumber, JsString, JsObject}
+import spray.json.JsObject
 
 /**
  * Linguistic concepts that may be used in the annotation of natural language.
@@ -36,42 +36,15 @@ package object linguistics {
       case 0 => end.compare(that.end)
       case x => x
     }
-
-    override val json: JsObject = JsObject(
-      "name" -> JsString("Token"),
-      "start" -> JsNumber(start),
-      "end" -> JsNumber(end)
-    )
   }
 
   trait PartOfSpeech extends Annotation
 
-  case class Verb(person: Option[Person], number: Option[Number]) extends PartOfSpeech {
-    override val json: JsObject = {
-      val fvs = Seq("person" -> person, "number" -> number)
-      val jfvs = Seq("name" -> JsString(getClass.getSimpleName)) ++
-        (for ((f, v) <- fvs if v != None; j = JsString(v.get.toString)) yield f -> j)
-      JsObject(jfvs: _*)
-    }
-  }
+  case class Verb(person: Option[Person], number: Option[Number]) extends PartOfSpeech
 
-  case class Pronoun(person: Option[Person], number: Option[Number], gender: Option[Gender]) extends PartOfSpeech {
-    override val json: JsObject = {
-      val fvs = Seq("person" -> person, "number" -> number, "gender" -> gender)
-      val jfvs = Seq("name" -> JsString(getClass.getSimpleName)) ++
-        (for ((f, v) <- fvs if v != None; j = JsString(v.get.toString)) yield f -> j)
-      JsObject(jfvs: _*)
-    }
-  }
+  case class Pronoun(person: Option[Person], number: Option[Number], gender: Option[Gender]) extends PartOfSpeech
 
   case class ReflexivePronoun(person: Option[Person], number: Option[Number], gender: Option[Gender])
-    extends PartOfSpeech {
-    override val json: JsObject = {
-      val fvs = Seq("person" -> person, "number" -> number, "gender" -> gender)
-      val jfvs = Seq("name" -> JsString(getClass.getSimpleName)) ++
-        (for ((f, v) <- fvs if v != None; j = JsString(v.get.toString)) yield f -> j)
-      JsObject(jfvs: _*)
-    }
-  }
+    extends PartOfSpeech
 
 }
