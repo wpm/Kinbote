@@ -6,6 +6,8 @@ package object kinbote {
 
   type Offset = Int
 
+  trait Annotation
+
   /**
    * An annotator adds to a document's standoff annotations.
    */

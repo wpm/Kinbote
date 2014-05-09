@@ -3,7 +3,8 @@ package com.github.wpm.kinbote
 import scalax.collection.Graph
 import scalax.collection.GraphEdge.DiEdge
 import scalax.collection.GraphPredef._
-import spray.json.{JsNumber, JsObject, JsArray}
+import spray.json._
+
 
 /**
  * Standoff annotation for a document
@@ -32,16 +33,18 @@ case class StandoffAnnotation(g: Graph[Annotation, DiEdge] = Graph[Annotation, D
    * @return JSON serialization of the annotation graph
    */
   def json: JsObject = {
+    import AnnotationJsonProtocol._
+
     val as = g.nodes.map(_.value).toSeq
     val asIndex = as.view.zipWithIndex.toMap
-    val jas = as.map(_.asInstanceOf[Annotation].json)
+    val jas = as.toJson
     val jedges = for (
       edge <- g.edges.toSeq;
       e1 = asIndex(edge._1.value);
       e2 = asIndex(edge._2.value);
       jedge = JsArray(JsNumber(e1), JsNumber(e2))
     ) yield jedge
-    JsObject("annotations" -> JsArray(jas: _*), "relations" -> JsArray(jedges: _*))
+    JsObject("annotations" -> jas, "relations" -> JsArray(jedges: _*))
   }
 
   override def toString: String = json.prettyPrint
