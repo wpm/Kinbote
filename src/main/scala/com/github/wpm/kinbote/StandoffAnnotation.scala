@@ -3,8 +3,6 @@ package com.github.wpm.kinbote
 import scalax.collection.Graph
 import scalax.collection.GraphEdge.DiEdge
 import scalax.collection.GraphPredef._
-import spray.json._
-
 
 /**
  * Standoff annotation for a document
@@ -27,27 +25,10 @@ case class StandoffAnnotation(g: Graph[Annotation, DiEdge] = Graph[Annotation, D
     case a: T => a
   }
 
-  /**
-   * The annotation graph is serialized as a list of annotations and a list of pairs of indexes into the annotation
-   * list.
-   * @return JSON serialization of the annotation graph
-   */
-  def json: JsObject = {
-    import AnnotationJsonProtocol._
+  // TODO Why doesn't the AnnotationJsonProtocol convert this implicitly?
+  def toJson = AnnotationJsonProtocol.StandoffAnnotationJsonFormat.write(this)
 
-    val as = g.nodes.map(_.value).toSeq
-    val asIndex = as.view.zipWithIndex.toMap
-    val jas = as.toJson
-    val jedges = for (
-      edge <- g.edges.toSeq;
-      e1 = asIndex(edge._1.value);
-      e2 = asIndex(edge._2.value);
-      jedge = JsArray(JsNumber(e1), JsNumber(e2))
-    ) yield jedge
-    JsObject("annotations" -> jas, "relations" -> JsArray(jedges: _*))
-  }
-
-  override def toString: String = json.prettyPrint
+  override def toString: String = toJson.prettyPrint
 }
 
 object StandoffAnnotation {
