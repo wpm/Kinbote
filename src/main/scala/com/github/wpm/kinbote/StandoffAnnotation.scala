@@ -24,11 +24,6 @@ case class StandoffAnnotation(g: Graph[Annotation, DiEdge] = Graph[Annotation, D
   def annotations[T: reflect.ClassTag]() = g.nodes.map(_.value) collect {
     case a: T => a
   }
-
-  // TODO Why doesn't the AnnotationJsonProtocol convert this implicitly?
-  def toJson = AnnotationJsonProtocol.StandoffAnnotationJsonFormat.write(this)
-
-  override def toString: String = toJson.prettyPrint
 }
 
 object StandoffAnnotation {

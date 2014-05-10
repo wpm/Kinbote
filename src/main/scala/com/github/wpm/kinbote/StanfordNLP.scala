@@ -1,7 +1,7 @@
 package com.github.wpm.kinbote
 
 import edu.arizona.sista.processors.corenlp.CoreNLPProcessor
-import com.github.wpm.kinbote.linguistics.Token
+import com.github.wpm.kinbote.Annotation.Token
 
 class StanfordNLP {
   val stanfordNLPProcessor = new CoreNLPProcessor()
