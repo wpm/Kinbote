@@ -8,7 +8,7 @@ import AnnotationJSONProtocol._
 
 class AnnotationsTest extends FunSuite {
   // The tokens in the sentence "He loves himself."
-  val heLovesHimselfTokens = Annotations() ++ (Token(0, 2) :: Token(3, 8) :: Token(9, 16) :: Token(16, 17) :: Nil)
+  val heLovesHimselfTokens = Annotations() addAnnotations (Token(0, 2) :: Token(3, 8) :: Token(9, 16) :: Token(16, 17) :: Nil)
 
   test("Add token annotations") {
     println(heLovesHimselfTokens)

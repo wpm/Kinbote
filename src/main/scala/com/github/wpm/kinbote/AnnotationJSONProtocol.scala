@@ -7,9 +7,17 @@ import com.github.wpm.kinbote.Annotation._
 object AnnotationJSONProtocol extends TypedJSONProtocol {
 
   implicit object AnnotationsFormat extends RootJsonFormat[Annotations] {
-    override def write(obj: Annotations) = obj.g.toSeq.map(_.asInstanceOf[TypedJSONSerializable]).toJson
+    val NODES: String = "nodes"
 
-    override def read(json: JsValue) = Annotations(json.convertTo[Set[TypedJSONSerializable]].map(_.asInstanceOf[Annotation]))
+    override def write(obj: Annotations) = {
+      val nodes = obj.g.nodes.map(_.value.asInstanceOf[TypedJSONSerializable])
+      Map(NODES -> nodes).toJson
+    }
+
+    override def read(json: JsValue) = {
+      val nodes = json.asJsObject.getFields(NODES).head
+      Annotations(nodes.convertTo[Set[TypedJSONSerializable]].map(_.asInstanceOf[Annotation]))
+    }
   }
 
   implicit val tokenFormat = jsonFormat2(Token)

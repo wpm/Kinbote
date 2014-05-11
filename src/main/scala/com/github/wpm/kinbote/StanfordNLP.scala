@@ -13,7 +13,7 @@ class StanfordNLP {
                annotations: Annotations = Annotations()): Annotations = {
     val doc = stanfordNLPProcessor.annotate(document)
     (annotations /: doc.sentences) {
-      (as, s) => as ++ sentenceTokens(s) ++ sentencePOS(s)
+      (as, s) => as addAnnotations sentenceTokens(s) addAnnotations sentencePOS(s)
     }
   }
 
