@@ -9,9 +9,11 @@ object AnnotationJSONProtocol extends TypedJSONProtocol {
   implicit object AnnotationsFormat extends RootJsonFormat[Annotations] {
     val NODES: String = "nodes"
 
-    override def write(obj: Annotations) = {
-      val nodes = obj.g.nodes.map(_.value.asInstanceOf[TypedJSONSerializable])
-      Map(NODES -> nodes).toJson
+    override def write(annotations: Annotations) = {
+      println(annotations.g.nodes)
+      val nodes = annotations.g.nodes.map(_.value).toSeq
+      val nodeIndex = nodes.view.zipWithIndex.toMap
+      Map(NODES -> nodes.map(_.asInstanceOf[TypedJSONSerializable])).toJson
     }
 
     override def read(json: JsValue) = {

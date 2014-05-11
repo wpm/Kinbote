@@ -5,6 +5,8 @@ import com.github.wpm.kinbote.Annotation._
 import spray.json._
 import AnnotationJSONProtocol._
 import edu.arizona.sista.processors.Sentence
+import scalax.collection.GraphEdge._
+
 
 class StanfordNLP {
   val stanfordNLPProcessor = new CoreNLPProcessor()
@@ -13,7 +15,12 @@ class StanfordNLP {
                annotations: Annotations = Annotations()): Annotations = {
     val doc = stanfordNLPProcessor.annotate(document)
     (annotations /: doc.sentences) {
-      (as, s) => as addAnnotations sentenceTokens(s) addAnnotations sentencePOS(s)
+      (as, sentence) =>
+        val tokens = sentenceTokens(sentence)
+        sentence.tags match {
+          case Some(tags) => as ++ (for ((t, p) <- tokens.zip(tags)) yield DiHyperEdge(t, PartOfSpeech(p)))
+          case None => as.addAnnotations(tokens)
+        }
     }
   }
 
@@ -29,7 +36,7 @@ object StanfordNLP {
   def main(args: Array[String]) {
     val a = StanfordNLP()
     implicit val document =
-      "A screaming comes across the sky. It has happened before, but there is nothing to compare it to now."
+      "He ran"
     val annotations = a.annotate(document)
     println(annotations.toJson.prettyPrint)
     println(annotations.get[Token]().toSeq.sorted.map(_.content).mkString("\n"))

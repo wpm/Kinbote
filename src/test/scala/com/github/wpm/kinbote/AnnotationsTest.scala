@@ -1,7 +1,7 @@
 package com.github.wpm.kinbote
 
 import org.scalatest.FunSuite
-import com.github.wpm.kinbote.Annotation.Token
+import com.github.wpm.kinbote.Annotation._
 
 import spray.json._
 import AnnotationJSONProtocol._
