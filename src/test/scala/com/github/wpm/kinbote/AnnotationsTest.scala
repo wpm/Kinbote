@@ -3,10 +3,20 @@ package com.github.wpm.kinbote
 import org.scalatest.FunSuite
 import com.github.wpm.kinbote.Annotation.Token
 
+import spray.json._
+import AnnotationJSONProtocol._
+
 class AnnotationsTest extends FunSuite {
+  // The tokens in the sentence "He loves himself."
+  val heLovesHimselfTokens = Annotations() ++ (Token(0, 2) :: Token(3, 8) :: Token(9, 16) :: Token(16, 17) :: Nil)
+
   test("Add token annotations") {
-    // He loves himself.
-    val actual = Annotations() ++ (Token(0, 2) :: Token(3, 8) :: Token(9, 16) :: Token(16, 17) :: Nil)
-    println(actual)
+    println(heLovesHimselfTokens)
+    println(heLovesHimselfTokens.toJson.prettyPrint)
+  }
+
+  test("Round trip JSON serialization") {
+    val roundTrip = heLovesHimselfTokens.toJson.convertTo[Annotations]
+    assert(heLovesHimselfTokens === roundTrip)
   }
 }

@@ -1,7 +1,8 @@
 package com.github.wpm.kinbote
 
+import AnnotationJSONProtocol._
 
-trait Annotation
+trait Annotation extends TypedJSONSerializable
 
 object Annotation {
 

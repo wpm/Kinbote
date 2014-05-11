@@ -23,5 +23,4 @@ package object kinbote {
     def annotate(document: Document): StandoffAnnotation =
       (StandoffAnnotation() /: annotators)((as, a) => a.annotate(document, as))
   }
-
 }
