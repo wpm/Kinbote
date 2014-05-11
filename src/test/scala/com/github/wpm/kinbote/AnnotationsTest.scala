@@ -23,6 +23,7 @@ class AnnotationsTest extends FunSuite {
 
   test("Add Edge") {
     val as = Annotations() ++ List(DiHyperEdge(Token(3, 4), PartOfSpeech("Noun")))
-    println(as.toJson.prettyPrint)
+    val roundTrip = as.toJson.convertTo[Annotations]
+    assert(as === roundTrip)
   }
 }

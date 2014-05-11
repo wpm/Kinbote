@@ -26,8 +26,6 @@ class StanfordNLP {
 
   def sentenceTokens(sentence: Sentence): Seq[Token] =
     sentence.startOffsets.zip(sentence.endOffsets).map(o => Token(o._1, o._2))
-
-  def sentencePOS(sentence: Sentence): Seq[PartOfSpeech] = sentence.tags.toSeq.flatten.map(PartOfSpeech)
 }
 
 object StanfordNLP {
@@ -40,5 +38,6 @@ object StanfordNLP {
     val annotations = a.annotate(document)
     println(annotations.toJson.prettyPrint)
     println(annotations.get[Token]().toSeq.sorted.map(_.content).mkString("\n"))
+    println(annotations)
   }
 }

@@ -13,7 +13,7 @@ case class Annotations(g: Graph[Annotation, DiHyperEdge] = Graph[Annotation, DiH
 
   def addAnnotations[A <: Annotation](as: TraversableOnce[A]): Annotations = Annotations((g /: as)(_ + _))
 
-  def get[T: reflect.ClassTag]() = g collect { case a: T => a}
+  def get[T: reflect.ClassTag]() = g.nodes.map(_.value) collect { case a: T => a}
 }
 
 object Annotations {

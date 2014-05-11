@@ -3,6 +3,7 @@ package com.github.wpm.kinbote
 
 import spray.json._
 import com.github.wpm.kinbote.Annotation._
+import scalax.collection.GraphEdge.DiHyperEdge
 
 object AnnotationJSONProtocol extends TypedJSONProtocol {
 
@@ -17,15 +18,18 @@ object AnnotationJSONProtocol extends TypedJSONProtocol {
     val EDGES = "edges"
 
     override def write(annotations: Annotations) = {
-      val nodes = annotations.g.nodes.map(_.value)
+      val nodes = annotations.g.nodes.toSeq.map(_.value)
       val nodeIndex = nodes.view.zipWithIndex.toMap
       val edges = for (edge <- annotations.g.edges; ns = edge.map(n => nodeIndex(n.value))) yield ns
       JsObject(NODES -> nodes.toJson, EDGES -> edges.toJson)
     }
 
     override def read(json: JsValue) = {
-      val nodes = json.asJsObject.getFields(NODES).head
-      Annotations(nodes.convertTo[Set[Annotation]])
+      val fields = json.asJsObject.getFields(NODES, EDGES)
+      val nodes = fields(0).convertTo[Seq[Annotation]]
+      val edgeIndexes = fields(1).convertTo[Seq[Seq[Int]]]
+      val edges = for (eis <- edgeIndexes; edge = eis.map(nodes(_))) yield DiHyperEdge[Annotation](edge)
+      Annotations(nodes) ++ edges
     }
   }
 
