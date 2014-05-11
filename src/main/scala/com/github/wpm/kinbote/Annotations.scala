@@ -6,4 +6,6 @@ package com.github.wpm.kinbote
  */
 case class Annotations(g: Set[Annotation] = Set.empty) {
   def ++[A <: Annotation](as: TraversableOnce[A]): Annotations = Annotations(g ++ as)
+
+  def get[T: reflect.ClassTag]() = g collect { case a: T => a}
 }
