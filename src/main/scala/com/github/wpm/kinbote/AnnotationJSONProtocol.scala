@@ -7,13 +7,14 @@ import com.github.wpm.kinbote.Annotation._
 object AnnotationJSONProtocol extends TypedJSONProtocol {
 
   implicit object AnnotationsFormat extends RootJsonFormat[Annotations] {
-    val NODES: String = "nodes"
+    val NODES = "nodes"
+    val EDGES = "edges"
 
     override def write(annotations: Annotations) = {
-      println(annotations.g.nodes)
       val nodes = annotations.g.nodes.map(_.value).toSeq
       val nodeIndex = nodes.view.zipWithIndex.toMap
-      Map(NODES -> nodes.map(_.asInstanceOf[TypedJSONSerializable])).toJson
+      val edges = for (edge <- annotations.g.edges; ns = edge.map(n => nodeIndex(n.value))) yield ns
+      JsObject(NODES -> nodes.map(_.asInstanceOf[TypedJSONSerializable]).toJson, EDGES -> edges.toJson)
     }
 
     override def read(json: JsValue) = {

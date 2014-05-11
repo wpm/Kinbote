@@ -13,7 +13,7 @@ import spray.json._
  * the type is not recognized
  */
 trait TypedJSONProtocol extends DefaultJsonProtocol {
-  val TYPE: String = "type"
+  val TYPE = "type"
 
   trait TypedJSONSerializable
 

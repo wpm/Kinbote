@@ -5,6 +5,7 @@ import com.github.wpm.kinbote.Annotation._
 
 import spray.json._
 import AnnotationJSONProtocol._
+import scalax.collection.GraphEdge.DiHyperEdge
 
 class AnnotationsTest extends FunSuite {
   // The tokens in the sentence "He loves himself."
@@ -18,5 +19,10 @@ class AnnotationsTest extends FunSuite {
   test("Round trip JSON serialization") {
     val roundTrip = heLovesHimselfTokens.toJson.convertTo[Annotations]
     assert(heLovesHimselfTokens === roundTrip)
+  }
+
+  test("Add Edge") {
+    val as = Annotations() ++ List(DiHyperEdge(Token(3, 4), PartOfSpeech("Noun")))
+    println(as.toJson.prettyPrint)
   }
 }
