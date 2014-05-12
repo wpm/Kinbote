@@ -21,8 +21,9 @@ class StanfordNLP {
       case (as, (sentence, n)) =>
         val tokens = sentenceTokens(sentence)
         val tags = sentenceTags(sentence)
+        val lemmas = sentenceLemmas(sentence)
 
-        val tokenInfo = (for (p <- List(tags); t <- p) yield t).transpose
+        val tokenInfo = (for (p <- List(tags, lemmas); t <- p) yield t).transpose
         val tokenEdges = if (tokenInfo.isEmpty) Nil
         else tokens.zip(tokenInfo).map { case (t, ti) => DiHyperEdge(Seq(t) ++ ti)}
         val sEdge: DiHyperEdge[Annotation] = DiHyperEdge(Seq(Sentence(n)) ++ tokens)
@@ -36,6 +37,13 @@ class StanfordNLP {
   def sentenceTags(sentence: Sentence): Option[Seq[PartOfSpeech]] = {
     sentence.tags match {
       case Some(ts) => Some(ts.map(PartOfSpeech))
+      case None => None
+    }
+  }
+
+  def sentenceLemmas(sentence: Sentence): Option[Seq[Lemma]] = {
+    sentence.lemmas match {
+      case Some(ls) => Some(ls.map(l => Lemma(l.toString)))
       case None => None
     }
   }

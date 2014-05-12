@@ -22,4 +22,8 @@ object Annotation {
 
   case class PartOfSpeech(pos: String) extends Annotation
 
+  case class Lemma(form: String) extends Annotation with Ordered[Lemma] {
+    override def compare(that: Lemma) = form.compare(that.form)
+  }
+
 }
