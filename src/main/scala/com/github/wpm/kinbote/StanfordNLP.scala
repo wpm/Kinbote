@@ -6,6 +6,9 @@ import spray.json._
 import AnnotationJSONProtocol._
 import edu.arizona.sista.processors.Sentence
 import scalax.collection.GraphEdge._
+import com.github.wpm.kinbote.Annotation.PartOfSpeech
+import com.github.wpm.kinbote.Annotation.Token
+import scala.Some
 
 
 class StanfordNLP {
@@ -17,17 +20,25 @@ class StanfordNLP {
     (annotations /: doc.sentences.zipWithIndex) {
       case (as, (sentence, n)) =>
         val tokens = sentenceTokens(sentence)
-        val q = sentence.tags match {
-          case Some(tags) => as ++ (for ((t, p) <- tokens.zip(tags)) yield DiHyperEdge(t, PartOfSpeech(p)))
-          case None => as.addAnnotations(tokens)
-        }
-        val sEdge = DiHyperEdge(Seq(Sentence(n)) ++ tokens)
-        q ++ Seq(sEdge)
+        val tags = sentenceTags(sentence)
+
+        val tokenInfo = (for (p <- List(tags); t <- p) yield t).transpose
+        val tokenEdges = if (tokenInfo.isEmpty) Nil
+        else tokens.zip(tokenInfo).map { case (t, ti) => DiHyperEdge(Seq(t) ++ ti)}
+        val sEdge: DiHyperEdge[Annotation] = DiHyperEdge(Seq(Sentence(n)) ++ tokens)
+        as ++ Seq(sEdge) ++ tokenEdges
     }
   }
 
   def sentenceTokens(sentence: Sentence): Seq[Token] =
     sentence.startOffsets.zip(sentence.endOffsets).map(o => Token(o._1, o._2))
+
+  def sentenceTags(sentence: Sentence): Option[Seq[PartOfSpeech]] = {
+    sentence.tags match {
+      case Some(ts) => Some(ts.map(PartOfSpeech))
+      case None => None
+    }
+  }
 }
 
 object StanfordNLP {
