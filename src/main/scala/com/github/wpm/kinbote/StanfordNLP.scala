@@ -14,13 +14,15 @@ class StanfordNLP {
   def annotate(document: Document,
                annotations: Annotations = Annotations()): Annotations = {
     val doc = stanfordNLPProcessor.annotate(document)
-    (annotations /: doc.sentences) {
-      (as, sentence) =>
+    (annotations /: doc.sentences.zipWithIndex) {
+      case (as, (sentence, n)) =>
         val tokens = sentenceTokens(sentence)
-        sentence.tags match {
+        val q = sentence.tags match {
           case Some(tags) => as ++ (for ((t, p) <- tokens.zip(tags)) yield DiHyperEdge(t, PartOfSpeech(p)))
           case None => as.addAnnotations(tokens)
         }
+        val sEdge = DiHyperEdge(Seq(Sentence(n)) ++ tokens)
+        q ++ Seq(sEdge)
     }
   }
 

@@ -6,6 +6,10 @@ trait Annotation extends TypedJSONSerializable
 
 object Annotation {
 
+  case class Sentence(n: Int) extends Annotation with Ordered[Sentence] {
+    override def compare(that: Sentence) = n.compare(that.n)
+  }
+
   case class Token(start: Offset, end: Offset) extends Annotation with Ordered[Token] {
 
     def content(implicit document: Document) = document.substring(start, end)
