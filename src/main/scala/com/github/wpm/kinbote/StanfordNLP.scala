@@ -1,16 +1,12 @@
 package com.github.wpm.kinbote
 
 import edu.arizona.sista.processors.corenlp.CoreNLPProcessor
-import com.github.wpm.kinbote.Annotation._
-import spray.json._
-import AnnotationJSONProtocol._
 import edu.arizona.sista.processors.Sentence
-import com.github.wpm.kinbote.Annotation.PartOfSpeech
-import com.github.wpm.kinbote.Annotation.Token
+import com.github.wpm.kinbote.Annotation._
 import scalax.collection.GraphEdge.DiHyperEdge
 
 
-class StanfordNLP {
+class StanfordNLP extends Annotator {
   protected val stanfordNLPProcessor = new CoreNLPProcessor()
 
   def annotate(document: Document, annotations: Annotations = Annotations()): Annotations = {
@@ -40,6 +36,9 @@ object StanfordNLP {
   def apply() = new StanfordNLP()
 
   def main(args: Array[String]) {
+    import spray.json._
+    import AnnotationJSONProtocol._
+
     val a = StanfordNLP()
     implicit val document =
       "He ran"
