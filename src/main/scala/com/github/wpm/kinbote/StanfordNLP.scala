@@ -25,7 +25,7 @@ class StanfordNLP {
         val tokenEdges = if (tokenInfo.isEmpty) Nil
         else tokens.zip(tokenInfo).map { case (t, ti) => DiHyperEdge(Seq(t) ++ ti)}
         val sEdge: DiHyperEdge[Annotation] = DiHyperEdge(Seq(Sentence(n)) ++ tokens)
-        as ++ Seq(sEdge) ++ tokenEdges
+        as + sEdge ++ tokenEdges
     }
   }
 
