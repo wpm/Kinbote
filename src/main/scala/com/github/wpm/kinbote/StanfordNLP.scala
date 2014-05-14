@@ -18,8 +18,7 @@ class StanfordNLP extends Annotator {
         val lemmas = sentenceAnnotations(sentence.lemmas, Lemma)
 
         val tokenInfo = (for (p <- List(tags, lemmas); t <- p) yield t).transpose
-        val tokenEdges = if (tokenInfo.isEmpty) Nil
-        else tokens.zip(tokenInfo).map { case (t, ti) => DiHyperEdge(Seq(t) ++ ti)}
+        val tokenEdges = tokenInfo.zip(tokens).map { case (ti, t) => DiHyperEdge(Seq(t) ++ ti)}
         val sEdge = DiHyperEdge(Seq(Sentence(n)) ++ tokens)
         as + sEdge ++ tokenEdges
     }
