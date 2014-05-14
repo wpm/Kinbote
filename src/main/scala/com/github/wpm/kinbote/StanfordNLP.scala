@@ -8,7 +8,6 @@ import edu.arizona.sista.processors.Sentence
 import scalax.collection.GraphEdge._
 import com.github.wpm.kinbote.Annotation.PartOfSpeech
 import com.github.wpm.kinbote.Annotation.Token
-import scala.Some
 
 
 class StanfordNLP {
@@ -20,8 +19,8 @@ class StanfordNLP {
     (annotations /: doc.sentences.zipWithIndex) {
       case (as, (sentence, n)) =>
         val tokens = sentenceTokens(sentence)
-        val tags = sentenceTags(sentence)
-        val lemmas = sentenceLemmas(sentence)
+        val tags = sentenceAnnotations(sentence.tags, PartOfSpeech)
+        val lemmas = sentenceAnnotations(sentence.lemmas, Lemma)
 
         val tokenInfo = (for (p <- List(tags, lemmas); t <- p) yield t).transpose
         val tokenEdges = if (tokenInfo.isEmpty) Nil
@@ -31,22 +30,11 @@ class StanfordNLP {
     }
   }
 
-  def sentenceTokens(sentence: Sentence): Seq[Token] =
+  protected def sentenceTokens(sentence: Sentence): Seq[Token] =
     sentence.startOffsets.zip(sentence.endOffsets).map(o => Token(o._1, o._2))
 
-  def sentenceTags(sentence: Sentence): Option[Seq[PartOfSpeech]] = {
-    sentence.tags match {
-      case Some(ts) => Some(ts.map(PartOfSpeech))
-      case None => None
-    }
-  }
-
-  def sentenceLemmas(sentence: Sentence): Option[Seq[Lemma]] = {
-    sentence.lemmas match {
-      case Some(ls) => Some(ls.map(l => Lemma(l.toString)))
-      case None => None
-    }
-  }
+  protected def sentenceAnnotations[A <: Annotation](as: Option[Array[String]], f: (String) => A): Option[Seq[A]] =
+    for (a <- as) yield a.map(f).toSeq
 }
 
 object StanfordNLP {
