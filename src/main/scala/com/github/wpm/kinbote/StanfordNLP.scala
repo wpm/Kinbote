@@ -5,16 +5,15 @@ import com.github.wpm.kinbote.Annotation._
 import spray.json._
 import AnnotationJSONProtocol._
 import edu.arizona.sista.processors.Sentence
-import scalax.collection.GraphEdge._
 import com.github.wpm.kinbote.Annotation.PartOfSpeech
 import com.github.wpm.kinbote.Annotation.Token
+import scalax.collection.GraphEdge.DiHyperEdge
 
 
 class StanfordNLP {
-  val stanfordNLPProcessor = new CoreNLPProcessor()
+  protected val stanfordNLPProcessor = new CoreNLPProcessor()
 
-  def annotate(document: Document,
-               annotations: Annotations = Annotations()): Annotations = {
+  def annotate(document: Document, annotations: Annotations = Annotations()): Annotations = {
     val doc = stanfordNLPProcessor.annotate(document)
     (annotations /: doc.sentences.zipWithIndex) {
       case (as, (sentence, n)) =>
@@ -31,7 +30,7 @@ class StanfordNLP {
   }
 
   protected def sentenceTokens(sentence: Sentence): Seq[Token] =
-    sentence.startOffsets.zip(sentence.endOffsets).map(o => Token(o._1, o._2))
+    sentence.startOffsets.zip(sentence.endOffsets).map { case (start, end) => Token(start, end)}
 
   protected def sentenceAnnotations[A <: Annotation](as: Option[Array[String]], f: (String) => A): Option[Seq[A]] =
     for (a <- as) yield a.map(f).toSeq
