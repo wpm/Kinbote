@@ -29,7 +29,7 @@ object AnnotationJSONProtocol extends TypedJSONProtocol {
       val nodes = fields(0).convertTo[Seq[Annotation]]
       val edgeIndexes = fields(1).convertTo[Seq[Seq[Int]]]
       val edges = for (eis <- edgeIndexes; edge = eis.map(nodes(_))) yield DiHyperEdge[Annotation](edge)
-      Annotations(nodes) ++ edges
+      Annotations(nodes, edges)
     }
   }
 

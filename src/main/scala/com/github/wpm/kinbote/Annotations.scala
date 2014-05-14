@@ -20,5 +20,8 @@ case class Annotations(g: Graph[Annotation, DiHyperEdge] = Graph[Annotation, DiH
 }
 
 object Annotations {
-  def apply(nodes: TraversableOnce[Annotation]): Annotations = Annotations() addAnnotations nodes
+  def apply[A <: Annotation](nodes: TraversableOnce[A]): Annotations = Annotations() addAnnotations nodes
+
+  def apply[A <: Annotation](nodes: TraversableOnce[A], edges: TraversableOnce[DiHyperEdge[A]]): Annotations =
+    Annotations().addAnnotations(nodes) ++ edges
 }
