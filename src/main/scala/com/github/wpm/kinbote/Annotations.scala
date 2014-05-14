@@ -23,5 +23,5 @@ object Annotations {
   def apply[A <: Annotation](nodes: TraversableOnce[A]): Annotations = Annotations() addAnnotations nodes
 
   def apply[A <: Annotation](nodes: TraversableOnce[A], edges: TraversableOnce[DiHyperEdge[A]]): Annotations =
-    Annotations().addAnnotations(nodes) ++ edges
+    Annotations(nodes) ++ edges
 }
