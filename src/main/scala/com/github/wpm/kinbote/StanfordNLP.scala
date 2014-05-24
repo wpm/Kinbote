@@ -41,7 +41,7 @@ object StanfordNLP {
     import AnnotationJSONProtocol._
 
     val a = StanfordNLP()
-    implicit val document = "He ran"
+    val document = "I was the shadow of the waxwing slain. By the false azure in the windowpane."
     val annotations = a.annotate(document)
     println(annotations.toJson.prettyPrint)
     println(annotations.get[Token]().toSeq.sorted.map(_.content).mkString("\n"))
