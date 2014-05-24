@@ -13,7 +13,7 @@ class StanfordNLP extends Annotator {
     val doc = stanfordNLPProcessor.annotate(document)
     (annotations /: doc.sentences.zipWithIndex) {
       case (as, (sentence, n)) =>
-        val tokens = sentenceTokens(sentence)
+        val tokens = sentenceTokens(document, sentence)
         val tags = sentenceAnnotations(sentence.tags, PartOfSpeech)
         val lemmas = sentenceAnnotations(sentence.lemmas, Lemma)
 
@@ -24,8 +24,10 @@ class StanfordNLP extends Annotator {
     }
   }
 
-  protected def sentenceTokens(sentence: Sentence): Seq[Token] =
-    sentence.startOffsets.zip(sentence.endOffsets).map { case (start, end) => Token(start, end)}
+  protected def sentenceTokens(document: Document, sentence: Sentence): Seq[Token] =
+    sentence.startOffsets.zip(sentence.endOffsets).map {
+      case (start, end) => Token(document.substring(start, end), start, end)
+    }
 
   protected def sentenceAnnotations[A <: Annotation](as: Option[Array[String]], f: (String) => A): Option[Seq[A]] =
     for (a <- as) yield a.map(f).toSeq

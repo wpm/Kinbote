@@ -34,7 +34,7 @@ object AnnotationJSONProtocol extends TypedJSONProtocol {
   }
 
   implicit val sentenceFormat = jsonFormat1(Sentence)
-  implicit val tokenFormat = jsonFormat2(Token)
+  implicit val tokenFormat = jsonFormat3(Token)
   implicit val partOfSpeechFormat = jsonFormat1(PartOfSpeech)
 
   override def readTypedJson(t: String, json: JsValue) = t match {

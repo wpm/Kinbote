@@ -10,9 +10,7 @@ object Annotation {
     override def compare(that: Sentence) = n.compare(that.n)
   }
 
-  case class Token(start: Offset, end: Offset) extends Annotation with Ordered[Token] {
-
-    def content(implicit document: Document) = document.substring(start, end)
+  case class Token(content:String, start: Offset, end: Offset) extends Annotation with Ordered[Token] {
 
     override def compare(that: Token) = start.compare(that.start) match {
       case 0 => end.compare(that.end)
