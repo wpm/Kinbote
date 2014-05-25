@@ -46,6 +46,6 @@ object StanfordNLP {
     println(annotations.toJson.prettyPrint)
     println(annotations.get[Token]().toSeq.sorted.map(_.content).mkString("\n"))
     println(annotations)
-    println(annotations.toDot(Some(document)))
+    println(annotations.toDot())
   }
 }

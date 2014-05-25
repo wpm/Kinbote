@@ -26,7 +26,7 @@ case class Annotations(g: Graph[Annotation, DiHyperEdge] = Graph[Annotation, DiH
 
   def get[T: reflect.ClassTag]() = g.nodes.map(_.value) collect { case a: T => a}
 
-  def toDot(document: Option[Document] = None): String = {
+  def toDot(): String = {
     val root = DotRootGraph(directed = true, id = None)
 
     // Build table of all nodes and write it in the header.
