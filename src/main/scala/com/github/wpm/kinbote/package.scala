@@ -1,26 +1,31 @@
 package com.github.wpm
 
+// TODO Serialization with Avro
+
+// TODO Type structure that enforces Annotator chain contracts
 
 package object kinbote {
+  /**
+   * A document
+   */
   type Document = String
 
+  /**
+   * An offset into a document
+   */
   type Offset = Int
 
-  /**
-   * An annotator adds to a document's annotations.
-   */
-  trait Annotator {
-    def annotate(document: Document, annotations: Annotations): Annotations
+  case class LabeledHyperEdge(from: Annotation, to: Set[Annotation], label: Option[String] = None) {
+    override def toString = s"$label: $from -> ${to.mkString("{", ",", "}")}"
   }
 
-  /**
-   * A sequence of annotators to apply to a document
-   *
-   * Each annotator may make use of the annotations created by the previous annotators.
-   * @param annotators sequence of annotators
-   */
-  case class AnnotatorChain(annotators: Annotator*) {
-    def annotate(document: Document): Annotations = (Annotations() /: annotators)((as, a) => a.annotate(document, as))
+  trait Annotator {
+    def apply(document: Document, analysis: DocumentAnalysis): DocumentAnalysis
+  }
+
+  case class AnnotatorChain(annotators: Annotator*) extends Annotator {
+    override def apply(document: Document, analysis: DocumentAnalysis = DocumentAnalysis()) =
+      (analysis /: annotators) { case (as, a) => a.apply(document, as)}
   }
 
 }
