@@ -1,5 +1,10 @@
 package com.github.wpm.kinbote
 
+import com.github.wpm.kinbote.DocumentAnalysis.LabeledHyperEdge
+
+/**
+ * Simple regular-expression based annotators.
+ */
 object Example {
 
   /**
@@ -40,5 +45,6 @@ object Example {
     val annotator = AnnotatorChain(WhitespaceTokenizer(), SentenceSplitter())
     val analysis = annotator(document)
     println(analysis.toDot)
+    println(analysis.toJson.prettyPrint)
   }
 }
