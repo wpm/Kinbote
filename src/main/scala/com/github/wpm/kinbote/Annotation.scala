@@ -3,7 +3,7 @@ package com.github.wpm.kinbote
 /**
  * Information about a part of a document
  */
-sealed trait Annotation
+trait Annotation
 
 case class Sentence(n: Int) extends Annotation with Ordered[Sentence] {
   override def compare(that: Sentence) = n.compare(that.n)

@@ -4,7 +4,7 @@ organization := "com.github.wpm.kinbote"
 
 version := "1.0.0"
 
-scalaVersion := "2.11"
+scalaVersion := "2.11.0"
 
 scalacOptions ++= Seq(
   "-unchecked",

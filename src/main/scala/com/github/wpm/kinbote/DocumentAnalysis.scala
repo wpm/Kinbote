@@ -11,7 +11,7 @@ import DocumentAnalysis._
  * @param nodes nodes in the hypergraph
  * @param edges edges in the hypergraph
  */
-case class DocumentAnalysis private(nodes: Set[Annotation] = Set(), edges: Set[LabeledHyperEdge] = Set()) {
+case class DocumentAnalysis(nodes: Set[Annotation] = Set(), edges: Set[LabeledHyperEdge] = Set()) {
 
   import DocumentAnalysis._
 
@@ -43,8 +43,6 @@ case class DocumentAnalysis private(nodes: Set[Annotation] = Set(), edges: Set[L
 
 object DocumentAnalysis {
   val AVRO_TYPE = AvroType[DocumentAnalysis]
-
-  def apply() = new DocumentAnalysis()
 
   def apply(json: JsValue) = {
     AVRO_TYPE.io.readJson(json) match {
