@@ -20,6 +20,7 @@ resolvers += "spray" at "http://repo.spray.io/"
 
 libraryDependencies ++= Seq(
   "edu.arizona.sista" % "processors" % "2.0",
-  "com.gensler" % "scalavro-util_2.10" % "0.6.2",
+  "com.gensler" %% "scalavro" % "0.6.2",
+  "io.spray" %%  "spray-json" % "1.2.6",
   "org.scalatest" %% "scalatest" % "2.1.5" % "test"
 )
