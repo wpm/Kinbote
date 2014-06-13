@@ -4,7 +4,7 @@ organization := "com.github.wpm.kinbote"
 
 version := "1.0.0"
 
-scalaVersion := "2.11.0"
+scalaVersion := "2.10.3"
 
 scalacOptions ++= Seq(
   "-unchecked",
@@ -20,7 +20,6 @@ resolvers += "spray" at "http://repo.spray.io/"
 
 libraryDependencies ++= Seq(
   "edu.arizona.sista" % "processors" % "2.0",
-  "com.gensler" %% "scalavro" % "0.6.2",
-  "io.spray" %%  "spray-json" % "1.2.6",
+  "com.gensler" % "scalavro_2.10" % "0.6.2",
   "org.scalatest" %% "scalatest" % "2.1.5" % "test"
 )
