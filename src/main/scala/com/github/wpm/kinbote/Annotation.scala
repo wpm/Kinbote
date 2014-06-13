@@ -21,3 +21,5 @@ case class Token(s: String, from: Offset, to: Offset) extends Annotation with Or
 case class PartOfSpeech(tag: String) extends Annotation
 
 case class Lemma(form: String) extends Annotation
+
+case class Entity(name: String) extends Annotation

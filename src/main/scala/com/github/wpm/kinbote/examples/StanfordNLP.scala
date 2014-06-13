@@ -19,9 +19,13 @@ class StanfordNLP extends Annotator {
         val tokens = sentenceTokens(document, sentence)
         val tags = sentenceAnnotations(sentence.tags, PartOfSpeech)
         val lemmas = sentenceAnnotations(sentence.lemmas, Lemma)
+        val entities = sentenceAnnotations(sentence.entities, Entity)
 
-        val tokenInfo = (for (p <- List(tags, lemmas); t <- p) yield t).transpose
-        val tokenEdges = tokenInfo.zip(tokens).map { case (ti, t) => LabeledHyperEdge(t, ti.toSet)}
+        // For each token, create a hyper edge with all its properties. Do not add entities tagged as "O" (non-named).
+        val tokenInfo = (for (p <- List(tags, lemmas, entities); t <- p) yield t).transpose
+        val tokenEdges = tokenInfo.zip(tokens).map {
+          case (ti, t) => LabeledHyperEdge(t, ti.toSet - Entity("O"))
+        }
         val sEdge = LabeledHyperEdge(Sentence(n), tokens.toSet)
         as.addEdge(sEdge).addEdges(tokenEdges)
     }
@@ -41,7 +45,8 @@ object StanfordNLP {
 
   def main(args: Array[String]) {
     val a = StanfordNLP()
-    val document = "I was the shadow of the waxwing slain. By the false azure in the windowpane."
+    val document = """Thomas Pynchon was born in Glen Cove, New York.
+                     |He attended Cornell University.""".stripMargin
     val analysis = a(document)
     println(analysis.toDot)
   }
