@@ -1,9 +1,12 @@
-package com.github.wpm.kinbote
+package com.github.wpm.kinbote.examples
 
-import edu.arizona.sista.processors.corenlp.CoreNLPProcessor
 import com.github.wpm.kinbote.DocumentAnalysis.LabeledHyperEdge
+import com.github.wpm.kinbote._
+import edu.arizona.sista.processors.corenlp.CoreNLPProcessor
 
-
+/**
+ * Annotator based on the Stanford NLP tools.
+ */
 class StanfordNLP extends Annotator {
   type StanfordSentence = edu.arizona.sista.processors.Sentence
 

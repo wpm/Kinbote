@@ -1,7 +1,8 @@
 package com.github.wpm.kinbote
 
+import com.github.wpm.kinbote.examples.SimpleRegularExpression
 import org.scalatest.FunSuite
-import Example._
+import SimpleRegularExpression._
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
 import com.github.wpm.kinbote.DocumentAnalysis.LabeledHyperEdge
 

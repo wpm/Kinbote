@@ -1,11 +1,12 @@
-package com.github.wpm.kinbote
+package com.github.wpm.kinbote.examples
 
 import com.github.wpm.kinbote.DocumentAnalysis.LabeledHyperEdge
+import com.github.wpm.kinbote._
 
 /**
  * Simple regular-expression based annotators.
  */
-object Example {
+object SimpleRegularExpression {
 
   /**
    * Tokenize a document on whitespace.
