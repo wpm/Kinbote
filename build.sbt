@@ -16,10 +16,8 @@ scalacOptions ++= Seq(
 
 initialCommands in console := "import com.github.wpm.kinbote._"
 
-resolvers += "spray" at "http://repo.spray.io/"
-
 libraryDependencies ++= Seq(
   "edu.arizona.sista" % "processors" % "2.0",
   "com.gensler" % "scalavro_2.10" % "0.6.2",
-  "org.scalatest" %% "scalatest" % "2.1.5" % "test"
+  "org.scalatest" %% "scalatest" % "2.2.0" % "test"
 )
