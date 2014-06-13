@@ -31,7 +31,7 @@ object Example {
         if (t.s.matches( """[.?!]""")) (a addEdge LabeledHyperEdge(Sentence(n), s + t), Set.empty[Annotation], n + 1)
         else (a, s + t, n)
       }
-      if (!ts.isEmpty) lastA addEdge LabeledHyperEdge(Sentence(lastN), ts)
+      if (ts.nonEmpty) lastA addEdge LabeledHyperEdge(Sentence(lastN), ts)
       else lastA
     }
   }
