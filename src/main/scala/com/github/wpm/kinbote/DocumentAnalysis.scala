@@ -1,10 +1,12 @@
 package com.github.wpm.kinbote
 
-import com.gensler.scalavro.types.AvroType
 import java.io.{InputStream, OutputStream}
-import scala.util.{Failure, Success}
+
+import com.gensler.scalavro.types.AvroType
+import com.github.wpm.kinbote.DocumentAnalysis._
 import spray.json.JsValue
-import DocumentAnalysis._
+
+import scala.util.{Failure, Success}
 
 /**
  * Analysis of a {{Document}}. This is a labeled directed hypergraph of {{Annotation}} objects.
@@ -13,7 +15,7 @@ import DocumentAnalysis._
  */
 case class DocumentAnalysis(nodes: Set[Annotation] = Set(), edges: Set[LabeledHyperEdge] = Set()) {
 
-  import DocumentAnalysis._
+  import com.github.wpm.kinbote.DocumentAnalysis._
 
   def addEdge(e: LabeledHyperEdge): DocumentAnalysis = DocumentAnalysis(nodes + e.from ++ e.to, edges + e)
 
@@ -24,10 +26,17 @@ case class DocumentAnalysis(nodes: Set[Annotation] = Set(), edges: Set[LabeledHy
   def get[T: reflect.ClassTag]() = nodes collect { case a: T => a}
 
   def toDot: String = {
+    def edgeText(edge: LabeledHyperEdge, nodeTable: Map[Annotation, Int]): String = {
+      val s = s"""\tn${nodeTable(edge.from)} -> ${edge.to.map("n" + nodeTable(_)).mkString("{", ",", "}")}"""
+      edge.label match {
+        case Some(l) => s"""$s [label = "$l"]"""
+        case None => s
+      }
+    }
     val nodeTable: Map[Annotation, Int] = Map() ++ nodes.zipWithIndex
     val ns = nodeTable.map { case (a, i) => s"""\tn$i [label = "$a"]"""}.mkString("\n")
     val es = edges.map(
-      edge => s"""\tn${nodeTable(edge.from)} -> ${edge.to.map("n" + nodeTable(_)).mkString("{", ",", "}")}"""
+      edge => edgeText(edge, nodeTable)
     ).mkString("\n")
     s"digraph {\n$ns\n$es\n}"
   }

@@ -3,6 +3,7 @@ package com.github.wpm.kinbote.examples
 import com.github.wpm.kinbote.DocumentAnalysis.LabeledHyperEdge
 import com.github.wpm.kinbote._
 import edu.arizona.sista.processors.corenlp.CoreNLPProcessor
+import edu.arizona.sista.processors.struct.DirectedGraphEdgeIterator
 
 /**
  * Annotator based on the Stanford NLP tools.
@@ -26,8 +27,14 @@ class StanfordNLP extends Annotator {
         val tokenEdges = tokenInfo.zip(tokens).map {
           case (ti, t) => LabeledHyperEdge(t, ti.toSet - Entity("O"))
         }
+        // For each sentence, create an edge for all the tokens it contains.
         val sEdge = LabeledHyperEdge(Sentence(n), tokens.toSet)
-        as.addEdge(sEdge).addEdges(tokenEdges)
+        // For each dependency, create a labeled edge from the modifier to the head.
+        val depEdges = for (dependencies <- sentence.dependencies.toSeq;
+                            depEdge <- new DirectedGraphEdgeIterator[String](dependencies))
+        yield LabeledHyperEdge(tokens(depEdge._2), Set(tokens(depEdge._1)), Some(depEdge._3))
+
+        as.addEdge(sEdge).addEdges(tokenEdges).addEdges(depEdges)
     }
   }
 
