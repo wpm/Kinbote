@@ -1,14 +1,14 @@
 # Kinbote
 
 *I was the shadow of the waxwing slain*  
-*By the false azure of the windowpane*  
+*By the false azure in the windowpane*  
 –Vladimir Nabokov, *Pale Fire*
 
 ## Overview
 
 Kinbote is a framework for the annotation of text documents.
 It provides a way to generate and serialize annotations that provide information about portions of a document.
-The exact nature of the information is undefined, but a typical use case would be linguistic annotatation, for example
+The exact nature of the information is undefined, but a typical use case would be linguistic annotation, for example
 parts of speech, coreference chains, etc.
 
 Kinbote is comparable to other linguistic annotation frameworks like Apache 
@@ -16,7 +16,7 @@ Kinbote is comparable to other linguistic annotation frameworks like Apache
 [General Architecture for Text Engineering (GATE)](https://gate.ac.uk/).
 It uses [Scala's](http://www.scala-lang.org/) cleaner syntax to cut down on the amount of boilerplate code required by
 these Java-based frameworks.
-It also allows provides a general-purpose cross-programming-language serialization scheme.
+It also allows provides a cross-platform, cross-programming-language serialization scheme.
 
 
 ## Getting Started
