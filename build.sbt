@@ -1,8 +1,8 @@
 name := "Kinbote"
 
-organization := "com.github.wpm.kinbote"
+organization := "com.github.wpm"
 
-version := "1.0.0"
+version := "1.0.0-SNAPSHOT"
 
 scalaVersion := "2.10.3"
 
