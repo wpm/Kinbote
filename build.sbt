@@ -1,6 +1,6 @@
 name := "Kinbote"
 
-organization := "com.github.wpm.kinbote"
+organization := "com.github.wpm"
 
 version := "1.0.0"
 

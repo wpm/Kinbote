@@ -23,3 +23,13 @@ case class PartOfSpeech(tag: String) extends Annotation
 case class Lemma(form: String) extends Annotation
 
 case class Entity(name: String) extends Annotation
+
+
+trait Annotator {
+  def apply(document: Document, analysis: DocumentAnalysis): DocumentAnalysis
+}
+
+case class AnnotatorChain(annotators: Annotator*) extends Annotator {
+  override def apply(document: Document, analysis: DocumentAnalysis = DocumentAnalysis()) =
+    (analysis /: annotators) { case (as, a) => a.apply(document, as)}
+}
